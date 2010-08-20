@@ -1,0 +1,55 @@
+{
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "groups": [
+
+      ],
+      "hosts": [
+        {
+          "hostid": "10017",
+          "proxy_hostid": "0",
+          "host": "Zabbix server",
+          "dns": "",
+          "useip": "1",
+          "ip": "127.0.0.1",
+          "port": "10050",
+          "status": "0",
+          "disable_until": "0",
+          "error": "",
+          "available": "1",
+          "errors_from": "0",
+          "lastaccess": "0",
+          "inbytes": "0",
+          "outbytes": "0",
+          "useipmi": "0",
+          "ipmi_port": "623",
+          "ipmi_authtype": "0",
+          "ipmi_privilege": "2",
+          "ipmi_username": "",
+          "ipmi_password": "",
+          "ipmi_disable_until": "0",
+          "ipmi_available": "0",
+          "snmp_disable_until": "0",
+          "snmp_available": "0",
+          "maintenanceid": "1",
+          "maintenance_status": "0",
+          "maintenance_type": "0",
+          "maintenance_from": "0",
+          "ipmi_ip": "127.0.0.1",
+          "ipmi_errors_from": "0",
+          "snmp_errors_from": "0",
+          "ipmi_error": "",
+          "snmp_error": ""
+        }
+      ],
+      "maintenanceid": "1",
+      "name": "asdf",
+      "maintenance_type": "0",
+      "description": "",
+      "active_since": "1282285660",
+      "active_till": "1282372060"
+    }
+  ],
+  "id": 0
+}

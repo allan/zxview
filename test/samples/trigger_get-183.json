@@ -1,0 +1,122 @@
+{
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "hosts": [
+        {
+          "maintenances": [
+            {
+              "maintenanceid": "0"
+            }
+          ],
+          "hostid": "10017",
+          "proxy_hostid": "0",
+          "host": "Zabbix server",
+          "dns": "",
+          "useip": "1",
+          "ip": "127.0.0.1",
+          "port": "10050",
+          "status": "0",
+          "disable_until": "0",
+          "error": "",
+          "available": "1",
+          "errors_from": "0",
+          "lastaccess": "0",
+          "inbytes": "0",
+          "outbytes": "0",
+          "useipmi": "0",
+          "ipmi_port": "623",
+          "ipmi_authtype": "0",
+          "ipmi_privilege": "2",
+          "ipmi_username": "",
+          "ipmi_password": "",
+          "ipmi_disable_until": "0",
+          "ipmi_available": "0",
+          "snmp_disable_until": "0",
+          "snmp_available": "0",
+          "maintenanceid": "0",
+          "maintenance_status": "0",
+          "maintenance_type": "0",
+          "maintenance_from": "0",
+          "ipmi_ip": "127.0.0.1",
+          "ipmi_errors_from": "0",
+          "snmp_errors_from": "0",
+          "ipmi_error": "",
+          "snmp_error": ""
+        }
+      ],
+      "triggerid": "13022",
+      "expression": "{12191}>0",
+      "description": "Some items are not supported",
+      "url": "",
+      "status": "0",
+      "value": "1",
+      "priority": "2",
+      "lastchange": "1282286994",
+      "dep_level": "0",
+      "comments": "Unsupported items pollute Zabbix server logfile and reduce performance. They usually indicate a configuration problem.",
+      "error": "",
+      "templateid": "13021",
+      "type": "0"
+    },
+    {
+      "hosts": [
+        {
+          "maintenances": [
+            {
+              "maintenanceid": "0"
+            }
+          ],
+          "hostid": "10051",
+          "proxy_hostid": "0",
+          "host": "allan.de",
+          "dns": "allan.de",
+          "useip": "0",
+          "ip": "0.0.0.0",
+          "port": "10050",
+          "status": "0",
+          "disable_until": "1282297577",
+          "error": "Get value from agent failed: *** Cannot connect to [allan.de]:10050 [Connection refused]",
+          "available": "2",
+          "errors_from": "1282286884",
+          "lastaccess": "0",
+          "inbytes": "0",
+          "outbytes": "0",
+          "useipmi": "0",
+          "ipmi_port": "623",
+          "ipmi_authtype": "-1",
+          "ipmi_privilege": "2",
+          "ipmi_username": "",
+          "ipmi_password": "",
+          "ipmi_disable_until": "0",
+          "ipmi_available": "0",
+          "snmp_disable_until": "0",
+          "snmp_available": "0",
+          "maintenanceid": "0",
+          "maintenance_status": "0",
+          "maintenance_type": "0",
+          "maintenance_from": "0",
+          "ipmi_ip": "",
+          "ipmi_errors_from": "0",
+          "snmp_errors_from": "0",
+          "ipmi_error": "",
+          "snmp_error": ""
+        }
+      ],
+      "triggerid": "13033",
+      "expression": "{12210}=1",
+      "description": "Server {HOSTNAME} is unreachable for 3 minutes",
+      "url": "",
+      "status": "0",
+      "value": "1",
+      "priority": "4",
+      "lastchange": "1282287780",
+      "dep_level": "0",
+      "comments": "",
+      "error": "",
+      "templateid": "10047",
+      "type": "0"
+    }
+  ],
+  "id": 0
+}
