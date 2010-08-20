@@ -5,8 +5,13 @@ This is a supplement for the Zabbix Dashboard which is easier to look at (depend
 
 ## Installation
 
-* Get all the files and put them in a directory your Zabbix webserver can access.  You have to serve these files from your Zabbix webserver, because `zxview` uses XMLHTTPRequests
-and your browser is only allowed to make those AJAX things to the same domain from which the HTML file was served (since Zabbix doesn't support JSONP and setting up an extra proxy for those things is annoying).  Since 99% of all Zabbix-installations will use Apache and the Apache configuration is annoying too, here's a snippet
+  * Get all the files and put them in a directory your Zabbix webserver
+    can access.  You have to serve these files from your Zabbix webserver,
+    because `zxview` uses XMLHTTPRequests and your browser is only allowed
+    to make those AJAX things to the same domain from which the HTML file was
+    served (since Zabbix doesn't support JSONP and setting up an extra proxy
+    for those things is annoying).  Since 99% of all Zabbix-installations will
+    use Apache and the Apache configuration is annoying too, here's a snippet
 
         $ cat /etc/httpd/conf.d/zxview.conf
         Alias /zxview /path/to/zxview
@@ -18,8 +23,11 @@ and your browser is only allowed to make those AJAX things to the same domain fr
             Allow from all
         </Directory>
 
-* use a newer Google Chrome build to view the page.  Zabbix's `frontends/php/api_jsonrpc.php` doesn't handle every Content-type it gets and Chrome is the only browser that by chance uses the Content-type that Zabbix's JSON API requires.
-Other browsers append a `charset=UTF-8`, which then won't be matched by Zabbix.
+  * use a newer Google Chrome build to view the page.  Zabbix's
+    `frontends/php/api_jsonrpc.php` doesn't handle every Content-type it gets
+    and Chrome is the only browser that by chance uses the Content-type that
+    Zabbix's JSON API requires.  Other browsers append a `charset=UTF-8`,
+    which then won't be matched by Zabbix.
 
         --- api_jsonrpc.php.original      2010-03-23 14:59:32.000000000 +0100
         +++ api_jsonrpc.php       2010-03-23 15:00:00.000000000 +0100
@@ -33,9 +41,13 @@ Other browsers append a `charset=UTF-8`, which then won't be matched by Zabbix.
         //                             'application/xml-rpc'           => 'xml-rpc',
         //                             'application/xml'                       => 'xml-rpc',
 
-* Since the Zabbix API doesn't use cookies for authentication, everytime you reload the page, a login dialog will be shown.
+  * Since the Zabbix API doesn't use cookies for authentication, everytime
+    you reload the page, a login dialog will be shown.
 
-* In the Zabbix Admin Interface you need to setup a user with the proper rights to acces the Zabbix API.  There is a special group for `API Access` I believe.  `readonly` rights are sufficient.  After setting up the user, you can test the API access with `curl`:
+  * In the Zabbix Admin Interface you need to setup a user with the proper
+    rights to acces the Zabbix API.  There is a special group for `API access`
+    I believe.  `readonly` rights are sufficient.  After setting up the user,
+    you can test the API access with `curl`:
 
         $ zabbixuser="..." zabbixpass="..." zabbixserver="..."
         $ export zabbixuser zabbixpass zabbixserver
@@ -50,17 +62,18 @@ Other browsers append a `charset=UTF-8`, which then won't be matched by Zabbix.
         , "jsonrpc":"2.0"
         }' \
         -H "Content-Type: application/json" \
-        -k https://$zabbixserver/api_jsonrpc.php
+        -k https://$zabbixserver/zabbix/api_jsonrpc.php
 
-The output of this command should look something like this:
+    The output of this command should look something like this:
 
         {"jsonrpc":"2.0","result":"8d4a5d5a5a63888e9273baeafa227","id":0}
 
-For later use, you could copy&paste the result, e.g.
+    For later use, you could copy&paste the result, e.g.
 
         $ export authtoken="8d4a5d5a5a63888e9273baeafa227"
 
-* Now you can login to the API.  Check if your user has the proper rights to view some hosts:
+  * Now you can login to the API.  Check if your user has the proper rights to 
+    view some hosts:
 
         $  curl -s -d '
         { "auth":"'$authtoken'"
@@ -73,13 +86,14 @@ For later use, you could copy&paste the result, e.g.
         , "jsonrpc":"2.0"
         }' \
         -H "Content-Type: application/json" \
-        -k https://$zabbixserver/api_jsonrpc.php
+        -k https://$zabbixserver/zabbix/api_jsonrpc.php
 
-* At this point zxview should already run.
+  * At this point zxview should already run.
 
 ## zxview customisation
 
-* In `zxview` you can give your hostgroups different colors.  To do that you have to edit the first lines of the file `zxview.js`:
+  * In `zxview` you can give your hostgroups different colors.  To do that
+    you have to edit the first lines of the file `zxview.js`:
 
         { // if you want to give a special color to a specific hostgroup          
           "sample Hostgroup": { displayname: "prod", color: "#3dbc34" },
@@ -87,18 +101,36 @@ For later use, you could copy&paste the result, e.g.
 
           "others":           { displayname: "allHosts",  color: "#e7a000" } 
         }
-          ^                    ^                         ^
-          |                    |    _____________________|
-          |                    |   |_.- the HTML color for the hostgroup                  
-          |                    |_____.- short name to display on page (only
-          |                             alphanumeric chars allowed)                    
-          |__________________________.- this must be the _exact_ hostgroup
-                                        name like it is configured in Zabbix
+          ^                     ^                         ^
+          |                     |    _____________________|
+          |                     |   |_.- the HTML color for the hostgroup                  
+          |                     |_____.- short name to display on page (only
+          |                              alphanumeric chars allowed, no spaces or
+          |                              else)                    
+          |___________________________.- this must be the *exact* hostgroup
+                                         name like it is configured in Zabbix
+    (Yes! ;) 
 
-(Yes! ;) 
+  * All hosts that are viewable by the user configured for API access 
+    will be in the group `others` which exists only in `zxview`.  If
+    you delete this group without adding some other group nothing will
+    be displayed.
 
-* If you have a common domain name scheme, for example _all_ your configured hosts end with the same domain, it can be helpful for the overview to delete the domainpart.  To do this search for {HOSTNAME} in `zxview.js`
+  * If you have a common domain name scheme, for example _all_ your
+    configured hosts end with the same domain, it can be helpful for the
+    overview to delete the domainpart.  To do this search for {HOSTNAME} in
+    `zxview.js`
 
-## Todo
+## Maintenances
 
-screenshot
+If you've got a lot of maintenances, some maybe scheduled repeatedly,
+and you don't want to see them in the list of maintenances, put the string
+'zx.filtered' somewhere in the description of the actual maintenance.
+
+
+#### Todo
+
+  * test
+  * screenshot
+  * external config file
+
