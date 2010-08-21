@@ -1,13 +1,12 @@
 require 'sinatra'
-require 'rack/contrib'
 require 'yajl/json_gem'
 
-use Rack::PostBodyContentTypeParser
 me = File.join(File.dirname(__FILE__))
 
 post %r{api_jsonrpc.php$} do
   content_type :json
-  js = request.env['rack.request.form_hash']
+  js = JSON.parse(request.env['rack.input'])
+  STDOUT.puts "[0;32mcalling[0m: "+js.inspect
 
   case js['method']
   when 'host.get' then
