@@ -10,8 +10,8 @@
     body {
       font-family: Mentone,Corbel,sans-serif;
       font-size: x-large;
-      background-color: #222222;
       color: #ddd;
+      background-color: #222222;
       margin-left: 10px;
       margin-right: 16px;
     }
@@ -93,13 +93,13 @@
     #hosts .host { /* {{{ */
     }
     .host .name {
-      padding-left: 5px;
+      padding-left: 10px;
       float: left;
       overflow: hidden;
-      width: 14em;
+      width: 13em;
     }
     .inMaintenance {
-      color: #85afcf;
+      color: #85afcf !important;
     }
     .umgebung {
       display: none;
@@ -136,30 +136,26 @@
     }
     .trigger {
       margin-top: 4px;
-      overflow: auto;
     }
     .problem .description {
-      color: #ddd;
-      font-size: 100%;
-      float: left;
-      overflow: hidden;
       margin-left: 10px;
+      padding-left: 10px;
+      overflow: hidden;
     }
     .problem .duration {
       float: left;
       text-align: right;
-      color: #ddd;
       font-size: 80%;
-      padding-right: 2em;
-      width: 10em;
+      padding-right: 1em;
+      min-width: 9em;
     }
     /* }}} */
     #error { /* {{{ */
       position: absolute;
       display: none;
       padding: 40px;
-      top: 45%;
-      left: 30%;
+      top: 35%;
+      left: 10%;
       font-size: 50px;
       text-align: center;
       font-weight: bolder;
@@ -173,6 +169,7 @@
     }
     #error_details {
       font-family: monospace;
+      font-size: 20px;
       z-index: 31;
     }
     #overlay {
@@ -199,6 +196,16 @@
       min-width: 1em;
       text-align: center;
       margin-right: 3px;
+    }
+    .urgent {
+      color: #333 !important;
+      background: -moz-linear-gradient(top, #f1f1f1, #b8b8b8);
+      background: -webkit-gradient(
+        linear, left bottom, left top,
+        from(#f1f1f1), to(#b8b8b8)
+      );
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
     }
   </style>
   <script type="text/html" id="maintenances_template"><!--{{{-->
@@ -229,7 +236,7 @@
         <div class='problems'>
           {{#problems}}
             <div class='trigger'>
-              <div class='duration'>
+              <div class='duration {{#freshness}}urgent{{/freshness}}'>
                 {{duration}}
               </div>
               <div class='description'>

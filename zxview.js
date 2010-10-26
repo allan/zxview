@@ -78,8 +78,8 @@ var zx =  //{{{
       setTimeout(function() {problems_bzzzt()}, 4000);
 
       setInterval(function() {maintenances_bzzzt()}, 21500);
-      setInterval(function() {problems_bzzzt()}, 20000);
-      setInterval(function() {ustats_bzzzt()}, 10000);
+      setInterval(function() {problems_bzzzt()}, 10000);
+      setInterval(function() {ustats_bzzzt()}, 300000);
 
       var style = '<style>';
       for (var group in zx.groups) {
@@ -127,7 +127,8 @@ var zx =  //{{{
         send(ustats_query, show_ustats);
       } //}}}
       function show_problems (json) { //{{{
-        var resultset = { result: [] , hosts: {} };
+        var resultset = { result: [] , hosts: {} }
+          , now = +new Date / 1000
         zx.maintenancedProblems = 0;
         zx.realProblems = 0;
 
@@ -182,6 +183,9 @@ var zx =  //{{{
               };
           resultset.hosts[hostname].problems.push(
             { description: trigger.description
+            , freshness: function() {
+                return (trigger.lastchange > (now - 60 * 30)) ? true : false
+              }
             , duration: zx.sse2dur(trigger.lastchange)
             , sse: trigger.lastchange
             }
@@ -344,7 +348,7 @@ var zx =  //{{{
       error: function (res, textStatus, errorThrown) {
         $('#error').html(
             "<div id='error_details'>("
-              +textStatus+" "+ res.status +" "+ res.statusText
+              +textStatus+" "+ res.getAllResponseHeaders() +" "+ res.responseText
             +")</div>");
         $('#error').fadeIn(500);
       }
