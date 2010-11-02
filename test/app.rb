@@ -19,6 +19,8 @@ post %r{api_jsonrpc.php$} do
   end
 end
 
+get %r{favicon.ico$} do 404 end
+
 get '/*' do
   File.read File.join(File.dirname(__FILE__), '..', params[:splat])
 end

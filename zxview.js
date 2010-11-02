@@ -187,6 +187,7 @@ var zx =  //{{{
                 return (trigger.lastchange > (now - 60 * 30)) ? true : false
               }
             , duration: zx.sse2dur(trigger.lastchange)
+            , triggerid: trigger.triggerid
             , sse: trigger.lastchange
             }
           );
@@ -205,6 +206,16 @@ var zx =  //{{{
           $('.problem.u'+group).hide();
         }
         if (zx.hideHostsInMaint) $('.inMaintenance').hide();
+        $(".description, .maintenance > .name").hover(function() {
+          $(this).css("background", "-moz-linear-gradient(top, #c1c1c1, #a8a8a8)")
+                 .css("background", "-webkit-gradient(linear, left bottom, left top, from(#c1c1c1), to(#a8a8a8))")
+                 .css({ "-webkit-border-radius": "3px",
+                        "-moz-border-radius": "3px",
+                        "color": "#333"
+                      })
+        }, function() {
+          $(this).css({ "background": "", "color": "#ddd" })
+        })
         delete template2; delete resultset; delete json;
       } //}}}
       function show_maintenances (json) { //{{{

@@ -79,6 +79,7 @@
     .maintenance .name {
       float: left;
       width: 100%;
+      cursor: pointer;
       border-bottom: 2px solid #666;
     }
     .maintenance .expired {
@@ -103,6 +104,7 @@
     }
     .umgebung {
       display: none;
+      cursor: pointer;
       float: left;
       font-size: 22px;
       font-weight: bold;
@@ -138,11 +140,14 @@
       margin-top: 4px;
     }
     .problem .description {
+      color: #ddd;
+      cursor: pointer;
       margin-left: 10px;
       padding-left: 10px;
       overflow: hidden;
     }
     .problem .duration {
+      color: #ddd;
       float: left;
       text-align: right;
       font-size: 80%;
@@ -215,7 +220,8 @@
       <div class="maintenance">
         {{#result}}
         {{#display}}
-        <div class='name {{expired}}'>
+        <div class='name {{expired}}'
+             onclick='window.open("/maintenance.php?form=update&maintenanceid={{maintenanceid}}", "_blank", "")'>
           {{name}}
         </div>
         <div class='description'>
@@ -235,7 +241,8 @@
         <div class='name'> {{hostname}} </div>
         <div class='problems'>
           {{#problems}}
-            <div class='trigger'>
+            <div class='trigger'
+              onclick='window.open("/events.php?triggerid={{triggerid}}", "_blank", "")'>
               <div class='duration {{#freshness}}urgent{{/freshness}}'>
                 {{duration}}
               </div>
