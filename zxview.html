@@ -2,7 +2,7 @@
 <html>
 <head>
   <script src="jquery-1.4.2.min.js" type="text/javascript"></script>
-  <script src="jquery.mustache.js" type="text/javascript"></script>
+  <script src="handlebars.js" type="text/javascript"></script>
   <script src="zxview.js" type="text/javascript"></script>
   <title>zxview</title>
   <style>
@@ -213,9 +213,8 @@
       -moz-border-radius: 3px;
     }
   </style>
-  <script type="text/html" id="maintenances_template"><!--{{{-->
+  <!--{{{--><script type="text/html" id="maintenances_template">
     <div id="header">Maintenances</div>
-    {{%IMPLICIT-ITERATOR}}
     <div id="list">
       <div class="maintenance">
         {{#result}}
@@ -231,8 +230,7 @@
       </div>
     </div>
   </script><!---}}}-->
-  <script type="text/html" id="problems_template"><!--{{{-->
-    {{%IMPLICIT-ITERATOR}}
+  <!--{{{--><script type="text/html" id="problems_template">
     {{#result}}
     {{#display}}
     <div class='problem u{{umgebung}}'>
@@ -240,6 +238,22 @@
         <div class='boeppel {{umgebung}}'> &nbsp; </div>
         <div class='name'> {{hostname}} </div>
         <div class='problems'>
+          {{#shorten}}
+          {{#problems}}
+          <div class='trigger shorten' 
+               style="display: {{#display}}block{{/display}}{{^display}}none{{/display}}">
+            <div class='duration'>
+              {{duration}}
+            </div>
+            <div class='description' {{^display}}
+              onclick='window.open("/events.php?triggerid={{triggerid}}",
+              "_blank", "")'{{/display}}>
+              {{description}}
+            </div>
+          </div>
+          {{/problems}}
+          {{/shorten}}
+          {{^shorten}}
           {{#problems}}
             <div class='trigger'
               onclick='window.open("/events.php?triggerid={{triggerid}}", "_blank", "")'>
@@ -251,14 +265,14 @@
               </div>
             </div>
           {{/problems}}
+          {{/shorten}}
         </div>
       </div>
     </div>
     {{/display}}
     {{/result}}
   </script><!---}}}-->
-  <script type="text/html" id="ustats_template"><!--{{{-->
-    {{%IMPLICIT-ITERATOR}}
+  <!--{{{--><script type="text/html" id="ustats_template">
     <div id="maintProb">{{maintenancedProblems}}</div>
     <div id="realProb">{{realProblems}}</div>
     <br class="clearboth">

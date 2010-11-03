@@ -162,15 +162,15 @@ var zx =  //{{{
             resultset.hosts[hostname] ||
               { hostname: hostname
               , groups: groups
-              , display: function () {
+              , display: (function () {
                   var display = false;
                   groups.forEach(function(group) {
                     for (var g in zx.groups)
                       if (group === g) display = true;
                   });
                   return display;
-                }
-              , umgebung: function() {
+                })()
+              , umgebung: (function() {
                   var css = '';
                   groups.forEach(function(group) {
                     for (var g in zx.groups)
@@ -178,33 +178,57 @@ var zx =  //{{{
                   });
                   if (inMaintenance) css += " inMaintenance";
                   return css;
-                }
+                })()
               , problems: []
               };
           resultset.hosts[hostname].problems.push(
             { description: trigger.description
-            , freshness: function() {
-                return (trigger.lastchange > (now - 60 * 30)) ? true : false
-              }
+            , freshness: trigger.lastchange > (now - 60 * 30) ? true : false
             , duration: zx.sse2dur(trigger.lastchange)
             , triggerid: trigger.triggerid
             , sse: trigger.lastchange
             }
           );
         });
-        for (var key in resultset.hosts) {
-          resultset.result.push(resultset.hosts[key]);
+        for (var hn in resultset.hosts) {
+          var host = resultset.hosts[hn]
+          // sort inside host
+          host.problems.sort(function(p1, p2) {
+            return p2.sse - p1.sse
+          })
+          var np = host.problems.length
+          if ( np > 4 && host.problems[0].sse < (now - 25 * 60 * 60)) {
+            host.shorten = true
+            host.problems.unshift(
+              { description: "This host has "+np+" problems"
+              , display: true
+              , freshness: false
+              , duration: host.problems[0].duration
+              , sse: host.problems[0].sse
+              }
+            )
+          }
+          resultset.result.push(host);
         }
+        // sort all hosts
         resultset.result.sort(function(a, b) {
           return b.problems[0].sse - a.problems[0].sse;
         });
+        delete resultset.hosts
 
-        var template2 = document.getElementById('problems_template').innerHTML;
-        $("#problems").html($.mustache(template2, resultset));
+        var template = document.getElementById('problems_template').innerHTML
+          , handlebar = Handlebars.compile(template)
+
+        $("#problems").html(handlebar(resultset));
         for (var group in zx.hiddenGroups) {
           //$('.problem.'+group).css("background-color", "#555");
           $('.problem.u'+group).hide();
         }
+        $('.shorten').toggle(function() {
+          $(this).siblings('.trigger:hidden').show()
+        }, function() {
+          $(this).siblings('.trigger').hide()
+        })
         if (zx.hideHostsInMaint) $('.inMaintenance').hide();
         $(".description, .maintenance > .name").hover(function() {
           $(this).css("background", "-moz-linear-gradient(top, #c1c1c1, #a8a8a8)")
@@ -223,23 +247,24 @@ var zx =  //{{{
           , now = +new Date / 1000
 
         json.result.forEach(function (maint) {
-          maint.expired = function() {
+          maint.expired = (function() {
             if (maint.active_till < now) return "expired";
             if (maint.active_since > now) return "waiting";
-          }
-          maint.display = function () {
+          })()
+          maint.display = (function () {
             var display = true
             if (maint.description.search(/zx.filtered/) != -1 ||
                 maint.active_till < (now - 7200)) // 2 hours
               display = false
 
             return display
-          }
+          })()
         })
 
-        var template = document.getElementById('maintenances_template').innerHTML;
-        $("#maintenances").html($.mustache(template, json));
-        
+        var template = document.getElementById('maintenances_template').innerHTML
+          , handlebar = Handlebars.compile(template)
+
+        $("#maintenances").html(handlebar(json));
         // toggle display of hosts in maintenance
         if (zx.hideHostsInMaint) $('#header').html(html);
         $('#header').click(function() {
@@ -285,8 +310,10 @@ var zx =  //{{{
         result.glist = glist;
         result.maintenancedProblems = zx.maintenancedProblems;
         result.realProblems = zx.realProblems;
-        var template = document.getElementById('ustats_template').innerHTML;
-        $("#umgebungen").html($.mustache(template, result));
+        var template = document.getElementById('ustats_template').innerHTML
+          , handlebar = Handlebars.compile(template)
+
+        $("#umgebungen").html(handlebar(result));
 
         $('#uplus,#uminus')
           .mouseover(function() {
@@ -367,6 +394,7 @@ var zx =  //{{{
   } //}}}
 
 $(document).ready(function(){
-   zx.login();
+  zx.login();
+  //zx.run()
 });
 })();
