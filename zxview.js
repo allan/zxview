@@ -31,6 +31,15 @@ var zx =  //{{{
       seconds == 0 || date.push(seconds + 's')
       return date.join(' ')
     } //}}}
+  , chain: function chain() {
+        var steps = Array.prototype.slice.call(arguments)
+          , i = 0
+        function cb() {
+          if (i === steps.length) return
+          steps[i++](cb)
+        }
+        steps[i](cb)
+    }
   , sse: function(sse) { //{{{
       return new Date(sse*1000);
     } //}}}
@@ -57,6 +66,7 @@ var zx =  //{{{
           zx.run();
         })
       } else {
+        alert("username and password required")
         location.reload();
       }
     } //}}}
@@ -73,9 +83,11 @@ var zx =  //{{{
     } //}}}
   , ustats: {}
   , run: function() { //{{{
-      ustats_bzzzt();
-      maintenances_bzzzt();
-      setTimeout(function() {problems_bzzzt()}, 4000);
+      zx.chain(
+        maintenances_bzzzt,
+        ustats_bzzzt,
+        problems_bzzzt
+      )
 
       setInterval(function() {maintenances_bzzzt()}, 21500);
       setInterval(function() {problems_bzzzt()}, 10000);
@@ -89,7 +101,7 @@ var zx =  //{{{
       style += '</style>';
       $('html > head').append($(style));
 
-      function problems_bzzzt () { //{{{
+      function problems_bzzzt (cb) { //{{{
         var problems_query =
           { method: "trigger.get"
           , params:
@@ -101,9 +113,9 @@ var zx =  //{{{
           , id: 0
           , jsonrpc: 2.0
           }
-        send(problems_query, show_problems)
+        send(problems_query, show_problems, cb)
       } //}}}
-      function maintenances_bzzzt () { //{{{
+      function maintenances_bzzzt (cb) { //{{{
         var maintenances_query =
           { method: "maintenance.get"
           , params: { extendoutput: true }
@@ -111,9 +123,9 @@ var zx =  //{{{
           , id: 0
           , jsonrpc: 2.0
           }
-          send(maintenances_query, show_maintenances);
+          send(maintenances_query, show_maintenances, cb);
       } //}}}
-      function ustats_bzzzt () { //{{{
+      function ustats_bzzzt (cb) { //{{{
         var ustats_query =
           { method: "host.get"
           , params:
@@ -124,7 +136,7 @@ var zx =  //{{{
           , id: 0
           , jsonrpc: 2.0
           }
-        send(ustats_query, show_ustats);
+        send(ustats_query, show_ustats, cb);
       } //}}}
       function show_problems (json) { //{{{
         var resultset = { result: [] , hosts: {} }
@@ -360,7 +372,7 @@ var zx =  //{{{
       } //}}}
     } //}}}
   }, //}}}
-  send = function (req, cb) { //{{{
+  send = function (req, fn1, fn2) { //{{{
     $.ajax({
       type: 'POST',
       dataType: "json",
@@ -380,7 +392,8 @@ var zx =  //{{{
           $('#error').fadeIn(500);
         } else {
           $('#error').fadeOut(500);
-          cb(msg);
+          fn1(msg)
+          fn2 && fn2()
         }
       },
       error: function (res, textStatus, errorThrown) {
