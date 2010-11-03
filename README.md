@@ -1,7 +1,22 @@
 zxview
 ======
 
-This is a supplement for the Zabbix Dashboard which is easier to look at (depends) and it also has a few little helpers to improve the overview if you've got a bigger setup.
+This is a replacement for the Zabbix Dashboard which is easier to look at (depends) and it also has a few little helpers to improve the overview if you've got a bigger setup.  Like:
+
+  * hiding all hosts in maintenance
+  * toggle display of selected groups/hostgroups
+  * show all active and hide all exired maintenances after 2 hours
+  * customizable colors for each group for easier estimation of importance
+  * new problems will be highlighted some time
+
+zxview uses the Zabbix JSON API to periodically pull all info.
+
+## Tryout
+
+        $ git clone http://github.com/allan/zxview.git
+        $ cd zxview/test
+        $ ruby -rrubygems app.rb # gem install sinatra yajl-ruby
+        $ open http://localhost:4567/zxview.html # and fill in some nonsense user/pw
 
 ## Installation
 
@@ -90,7 +105,7 @@ This is a supplement for the Zabbix Dashboard which is easier to look at (depend
 
   * At this point zxview should already run.
 
-## zxview customisation
+## zxview customization
 
   * In `zxview` you can give your hostgroups different colors.  To do that
     you have to edit the first lines of the file `zxview.js`:
