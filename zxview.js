@@ -106,7 +106,9 @@ var zx =  //{{{
           { method: "trigger.get"
           , params:
               { select_hosts: true
-              , only_problems: true
+              , select_groups: true
+              , only_true: true
+              , monitored: true
               , extendoutput: true
               }
           , auth: zx.authtoken
@@ -131,6 +133,8 @@ var zx =  //{{{
           , params:
             { select_groups: true
             , extendoutput: true
+            , only_true: true
+            , monitored: true
             }
           , auth: zx.authtoken
           , id: 0
@@ -209,7 +213,7 @@ var zx =  //{{{
             return p2.sse - p1.sse
           })
           var np = host.problems.length
-          if ( np > 4 && host.problems[0].sse < (now - 25 * 60 * 60)) {
+          if ( np > 1 && host.problems[0].sse < (now - 25 * 60 * 60)) {
             host.shorten = true
             host.problems.unshift(
               { description: "This host has "+np+" problems"
@@ -379,7 +383,7 @@ var zx =  //{{{
       contentType: "application/json",
       url: "/api_jsonrpc.php",
       data: JSON.stringify(req),
-      timeout: 7000,
+      timeout: 17000,
       success: function (msg) {
         if (msg === null || msg.error) {
           //zx.log(msg);
@@ -399,7 +403,7 @@ var zx =  //{{{
       error: function (res, textStatus, errorThrown) {
         $('#error').html(
             "<div id='error_details'>("
-              +textStatus+" "+ res.getAllResponseHeaders() +" "+ res.responseText
+              +textStatus+" "+ res.responseText
             +")</div>");
         $('#error').fadeIn(500);
       }
