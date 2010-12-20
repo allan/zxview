@@ -10,7 +10,7 @@ var zx =  //{{{
         "others":           { displayname: "allHosts",  color: "#e7a000" }
       }
 
-  , hiddenGroups: {}
+  , hiddenGroups: JSON.parse(localStorage.getItem('hiddenGroups')) || {}
   , hideHostsInMaint: false
   , log: function () { //{{{
       $('#log').append("--> ");
@@ -86,12 +86,13 @@ var zx =  //{{{
       zx.chain(
         maintenances_bzzzt,
         ustats_bzzzt,
-        problems_bzzzt
+        problems_bzzzt,
+        function() {
+          setInterval(maintenances_bzzzt, 21500);
+          setInterval(problems_bzzzt, 10000);
+          setInterval(ustats_bzzzt, 300000);
+        }
       )
-
-      setInterval(function() {maintenances_bzzzt()}, 21500);
-      setInterval(function() {problems_bzzzt()}, 10000);
-      setInterval(function() {ustats_bzzzt()}, 300000);
 
       var style = '<style>';
       for (var group in zx.groups) {
@@ -167,9 +168,9 @@ var zx =  //{{{
             trigger.hosts[0].maintenance_status === "1" ?  true : false;
 
           var groups = zx.ustats[trigger.hosts[0].hostid].groups || [];
-          trigger.description = trigger.hosts[0].ip === "127.0.0.1" ?
-            trigger.description.replace(/\{HOSTNAME\}/, shortHostName) :
-            trigger.description.replace(/\{HOSTNAME\}/, trigger.hosts[0].ip);
+          trigger.description = trigger.hosts[0].ip === "127.0.0.1"
+            ? trigger.description.replace(/\{HOSTNAME\}/, shortHostName)
+            : trigger.description.replace(/\{HOSTNAME\}/, trigger.hosts[0].ip);
           trigger.description = trigger.description.replace(/^\d+ /, '');
           trigger.description = trigger.description+": "+trigger.comments;
           inMaintenance ? zx.maintenancedProblems++ : zx.realProblems++;
@@ -184,6 +185,7 @@ var zx =  //{{{
                     for (var g in zx.groups)
                       if (group === g) display = true;
                   });
+                  if (trigger.value === "0") display = false;
                   return display;
                 })()
               , umgebung: (function() {
@@ -360,12 +362,14 @@ var zx =  //{{{
             $(this).css("background-color", getColorFor(group));
             $(this).children().css("background-color", getColorFor(group));
             $('.u'+group+'.problem').show();
-            delete zx.hiddenGroups[group]
+            delete zx.hiddenGroups[group];
+            localStorage.setItem('hiddenGroups', JSON.stringify(zx.hiddenGroups));
           } else {
             $(this).css("background-color", "#555");
             $(this).children().css("background-color", "#555");
             $('.u'+group+'.problem').hide();
-            zx.hiddenGroups[group] = true
+            zx.hiddenGroups[group] = true;
+            localStorage.setItem('hiddenGroups', JSON.stringify(zx.hiddenGroups));
           }
         });
         for (var group in zx.hiddenGroups) {
@@ -383,7 +387,7 @@ var zx =  //{{{
       contentType: "application/json",
       url: "/api_jsonrpc.php",
       data: JSON.stringify(req),
-      timeout: 17000,
+      timeout: 20000,
       success: function (msg) {
         if (msg === null || msg.error) {
           //zx.log(msg);
