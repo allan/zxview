@@ -36,7 +36,7 @@ var zx =  //{{{
           , i = 0
         function cb() {
           if (i === steps.length) return
-          steps[i++](cb)
+          steps[++i](cb)
         }
         steps[i](cb)
     }

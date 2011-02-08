@@ -4,3 +4,4 @@
 tmp/*
 dtach.socket
 .*rc
+*.rbc
