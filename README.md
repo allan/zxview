@@ -142,10 +142,12 @@ If you've got a lot of maintenances, some maybe scheduled repeatedly,
 and you don't want to see them in the list of maintenances, put the string
 'zx.filtered' somewhere in the description of the actual maintenance.
 
+## Screenshot
+
+![screenshot](http://allan.de/zxview.png)
 
 #### Todo
 
   * test
-  * screenshot
   * external config file
 
